@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>News Card Preview</title>
+    <title>সংবাদ কার্ড প্রিভিউ | হাল্কা প্রেস</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -96,6 +96,7 @@
             background-repeat: no-repeat;
             position: relative;
             transition: height 0.3s ease;
+            padding: 0 25px 0 25px;
         }
 
         .caption>* {
@@ -113,18 +114,28 @@
 
         .top-left-logo {
             position: absolute;
-            top: 15px;
-            left: 15px;
-            width: 100px;
+            top: 20px;
+            left: 20px;
+            width: 90px;
             height: auto;
             z-index: 10;
-            opacity: 0.8;
+            opacity: 80%;
             border-radius: 4px;
-            display: none;
         }
 
         .caption.with-footer {
             height: calc(40% - 60px);
+        }
+
+        #downloadBtn {
+      
+            padding: 8px 16px;
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -133,38 +144,40 @@
     <div class="container">
         <div class="input-area">
             <div>
-                <label for="mainImage">Main Image</label>
+                <label for="mainImage">মূল ছবি নির্বাচন করুন</label>
                 <input type="file" id="mainImage" accept="image/*">
             </div>
             <div>
-                <label for="captionText">Caption</label>
-                <input type="text" id="captionText" placeholder="ক্যাপশন লিখুন">
+                <label for="captionText">ঠিক করে ক্যাপশন লিখুন</label>
+                <input type="text" id="captionText" placeholder="উদাহরণ: ঠিক করে ক্যাপশন লিখুন">
             </div>
             <div>
-                <label for="footerImage">Footer Logo</label>
+                <label for="footerImage">ফুটার বিজ্ঞাপন আপলোড করুন</label>
                 <input type="file" id="footerImage" accept="image/*">
             </div>
             <div>
-                <label for="topLogo">Top Left Logo</label>
-                <input type="file" id="topLogo" accept="image/*">
+                    <button id="downloadBtn">ডাউনলোড করুন</button>
+
             </div>
+
         </div>
 
         <div class="news-card">
             <div class="image-container">
                 <img class="news-image"
-                    src="https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    src="https://img.freepik.com/free-photo/blue-teal-sand-paper_53876-92791.jpg?t=st=1753892555~exp=1753896155~hmac=14c1d59cc330ff23e50f651d52862b36bf7166a74b3f937886ad70371b3e4af3&w=1380"
                     alt="News Image">
+                <img class="top-left-logo" src="logo.png" alt="Top Left Logo">
             </div>
             <div class="caption">
-                <span>শীতের সকালে অরণ্যের নিস্তব্ধতা ও সৌন্দর্য</span>
+                <span>ঠিক করে ক্যাপশন লিখুন</span>
             </div>
             <img id="footerLogo" class="footer-logo" src="" alt="Footer Logo">
-            <img id="topLeftLogo" class="top-left-logo" src="" alt="Top Left Logo">
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         $('#mainImage').on('change', function (e) {
             const file = e.target.files[0];
@@ -196,18 +209,30 @@
             }
         });
 
-        $('#topLogo').on('change', function (e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#topLeftLogo').attr('src', e.target.result).show();
-                };
-                reader.readAsDataURL(file);
-            } else {
-                $('#topLeftLogo').hide();
-            }
+    $('#downloadBtn').on('click', function () {
+            const btn = $(this);
+            btn.hide(); // Hide button before capture
+            html2canvas(document.querySelector('.news-card')).then(canvas => {
+                const link = document.createElement('a');
+
+                // Generate timestamp string like YYYYMMDD_HHMMSS
+                const now = new Date();
+                const pad = (n) => n.toString().padStart(2, '0');
+                const timestamp =
+                    now.getFullYear().toString() +
+                    pad(now.getMonth() + 1) +
+                    pad(now.getDate()) + '_' +
+                    pad(now.getHours()) +
+                    pad(now.getMinutes()) +
+                    pad(now.getSeconds());
+
+                link.download = `news_card_${timestamp}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                btn.show(); // Show button after capture
+            });
         });
+
     </script>
 </body>
 
