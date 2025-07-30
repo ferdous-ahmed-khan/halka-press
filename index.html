@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>News Card Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Hind Siliguri", sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            display: flex;
+            gap: 40px;
+            width: 1000px;
+            max-width: 100%;
+            height: 620px;
+        }
+
+        .input-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 20px;
+        }
+
+        .input-area label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .input-area input[type="file"],
+        .input-area input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .news-card {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            border: 1px solid #ccc;
+            overflow: hidden;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-container {
+            height: 65%;
+            width: 100%;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .news-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .caption {
+            height: 35%;
+            font-size: 30px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 700;
+            background-image: url('/caption_back.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            transition: height 0.3s ease;
+        }
+
+        .caption>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-logo {
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            position: absolute;
+            display: none;
+        }
+
+        .top-left-logo {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 100px;
+            height: auto;
+            z-index: 10;
+            opacity: 0.8;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .caption.with-footer {
+            height: calc(40% - 60px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="input-area">
+            <div>
+                <label for="mainImage">Main Image</label>
+                <input type="file" id="mainImage" accept="image/*">
+            </div>
+            <div>
+                <label for="captionText">Caption</label>
+                <input type="text" id="captionText" placeholder="ক্যাপশন লিখুন">
+            </div>
+            <div>
+                <label for="footerImage">Footer Logo</label>
+                <input type="file" id="footerImage" accept="image/*">
+            </div>
+            <div>
+                <label for="topLogo">Top Left Logo</label>
+                <input type="file" id="topLogo" accept="image/*">
+            </div>
+        </div>
+
+        <div class="news-card">
+            <div class="image-container">
+                <img class="news-image"
+                    src="https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="News Image">
+            </div>
+            <div class="caption">
+                <span>শীতের সকালে অরণ্যের নিস্তব্ধতা ও সৌন্দর্য</span>
+            </div>
+            <img id="footerLogo" class="footer-logo" src="" alt="Footer Logo">
+            <img id="topLeftLogo" class="top-left-logo" src="" alt="Top Left Logo">
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $('#mainImage').on('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $('.news-image').attr('src', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        $('#captionText').on('input', function () {
+            $('.caption span').text($(this).val());
+        });
+
+        $('#footerImage').on('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#footerLogo').attr('src', e.target.result).show();
+                    $('.caption').addClass('with-footer');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                $('#footerLogo').hide();
+                $('.caption').removeClass('with-footer');
+            }
+        });
+
+        $('#topLogo').on('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#topLeftLogo').attr('src', e.target.result).show();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                $('#topLeftLogo').hide();
+            }
+        });
+    </script>
+</body>
+
+</html>
